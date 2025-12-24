@@ -1,0 +1,360 @@
+---
+title: "cfbResumeR_setup"
+author: "Bo Han"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rvest)
+library(dplyr)
+library(tidyverse)
+```
+
+#### Win Loss Records Against Ranked Opponents
+```{r}
+url = "https://betiq.teamrankings.com/college-football/betting-trends/win-loss-records-vs-ranked-opponent/?season=2024"
+page = read_html(url)
+
+team = page %>%
+  html_nodes("td.nowrap") %>% html_text(trim=T)
+rk_wl = page %>%
+  html_nodes(".nowrap+ td") %>% html_text(trim=T)
+
+ranked2024 = data.frame(Team=team, Ranked_WinLoss=rk_wl)
+```
+
+```{r}
+url = "https://betiq.teamrankings.com/college-football/betting-trends/win-loss-records-vs-ranked-opponent/"
+page = read_html(url)
+
+team = page %>%
+  html_nodes("td.nowrap") %>% html_text(trim=T)
+rk_wl = page %>%
+  html_nodes(".nowrap+ td") %>% html_text(trim=T)
+
+ranked2025 = data.frame(Team=team, Ranked_WinLoss=rk_wl)
+```
+
+#### Win Loss Records Against Conference Opponents
+```{r}
+url = "https://betiq.teamrankings.com/college-football/betting-trends/win-loss-records-conference-games/?season=2024"
+page = read_html(url)
+
+team = page %>%
+  html_nodes("td.nowrap") %>% html_text(trim=T)
+conf_wl = page %>%
+  html_nodes(".nowrap+ td") %>% html_text(trim=T)
+
+conference2024 = data.frame(Team=team, Conference_WinLoss=conf_wl)
+```
+
+```{r}
+url = "https://betiq.teamrankings.com/college-football/betting-trends/win-loss-records-conference-games/"
+page = read_html(url)
+
+team = page %>%
+  html_nodes("td.nowrap") %>% html_text(trim=T)
+conf_wl = page %>%
+  html_nodes(".nowrap+ td") %>% html_text(trim=T)
+
+conference2025 = data.frame(Team=team, Conference_WinLoss=conf_wl)
+```
+
+#### Win Loss Records for Regular Season
+```{r}
+url = "https://betiq.teamrankings.com/college-football/betting-trends/win-loss-records-regular-season/?season=2024"
+page = read_html(url)
+
+team = page %>%
+  html_nodes("td.nowrap") %>% html_text(trim=T)
+reg_wl = page %>%
+  html_nodes(".nowrap+ td") %>% html_text(trim=T)
+
+season2024 = data.frame(Team=team, RegSeason_WinLoss=reg_wl)
+```
+
+```{r}
+url = "https://betiq.teamrankings.com/college-football/betting-trends/win-loss-records-regular-season/"
+page = read_html(url)
+
+team = page %>%
+  html_nodes("td.nowrap") %>% html_text(trim=T)
+reg_wl = page %>%
+  html_nodes(".nowrap+ td") %>% html_text(trim=T)
+
+season2025 = data.frame(Team=team, RegSeason_WinLoss=reg_wl)
+```
+
+#### Join Tables
+```{r}
+winloss_2024 = ranked2024 %>%
+  left_join(conference2024, by="Team") %>%
+  left_join(season2024, by="Team")
+
+winloss_2025 = ranked2025 %>%
+  left_join(conference2025, by="Team") %>%
+  left_join(season2025, by="Team")
+```
+
+#### Standardize Team Names
+```{r}
+name_map = c(
+  "Ohio St" = "Ohio State",
+  "Penn St" = "Penn State",
+  "Iowa St" = "Iowa State",
+  "Kansas St" = "Kansas State",
+  "Michigan St" = "Michigan State",
+  "Mississippi St" = "Mississippi State",
+  "Oklahoma St" = "Oklahoma State",
+  "Oregon St" = "Oregon State",
+  "Utah St" = "Utah State",
+  "Kent St" = "Kent State",
+  "Boise St" = "Boise State",
+  "Fresno St" = "Fresno State",
+  "San Diego St" = "San Diego State",
+  "San Jose St" = "San José State",
+  "Florida St" = "Florida State",
+  "N Illinois" = "Northern Illinois",
+  "E Carolina" = "East Carolina",
+  "C Michigan" = "Central Michigan",
+  "W Michigan" = "Western Michigan",
+  "W Kentucky" = "Western Kentucky",
+  "S Florida" = "South Florida",
+  "N Texas" = "North Texas",
+  "Middle Tenn" = "Middle Tennessee",
+  "Mississippi" = "Ole Miss",
+  "Miami OH" = "Miami (OH)",
+  "Coastal Car" = "Coastal Carolina",
+  "Florida Intl" = "Florida International",
+  "J Madison" = "James Madison",
+  "UMass" = "Massachusetts",
+  "Ball St" = "Ball State",
+  "Georgia So" = "Georgia Southern",
+  "Jacksonville St" = "Jacksonville State",
+  "Arkansas St" = "Arkansas State",
+  "Arizona St" = "Arizona State",
+  "Georgia St" = "Georgia State",
+  "New Mexico St" = "New Mexico State",
+  "Washington St" = "Washington State",
+  "Kennesaw St" = "Kennesaw State",
+  "Colorado St" = "Colorado State",
+  "S Alabama" = "South Alabama"
+)
+
+winloss_2024 = winloss_2024 %>%
+  mutate(Team=recode(Team, !!!name_map))
+
+winloss_2025 = winloss_2025 %>%
+  mutate(Team = recode(Team, !!!name_map))
+```
+
+#### Separate Wins and Losses
+```{r}
+split_record = function(df, col){
+  df %>%
+    separate({{col}}, into=c("Wins", "Losses"), sep="-", convert=T)
+}
+```
+
+```{r, warning=F}
+winloss_2024 = winloss_2024 %>%
+  separate(Ranked_WinLoss, into=c("Ranked_Wins", "Ranked_Losses"), sep="-",
+           convert=T, remove=F) %>%
+  separate(Conference_WinLoss, into=c("Conf_Wins", "Conf_Losses"), sep="-",
+           convert=T, remove=F) %>%
+  separate(RegSeason_WinLoss, into=c("RegSeason_Wins", "RegSeason_Losses"), sep="-",
+           convert=T, remove=F)
+
+winloss_2025 = winloss_2025 %>%
+  separate(Ranked_WinLoss, into=c("Ranked_Wins", "Ranked_Losses"), sep="-",
+           convert=T, remove=F) %>%
+  separate(Conference_WinLoss, into=c("Conf_Wins", "Conf_Losses"), sep="-",
+           convert=T, remove=F) %>%
+  separate(RegSeason_WinLoss, into=c("RegSeason_Wins", "RegSeason_Losses"), sep="-",
+           convert=T, remove=F)
+```
+
+#### Convert Wins/Losses into Win Percentages
+```{r}
+winloss_2024 = winloss_2024 %>%
+  mutate(Ranked_WinPct = Ranked_Wins/(Ranked_Wins+Ranked_Losses),
+         Conf_WinPct = ifelse(is.na(Conf_Wins),
+                              0,
+                              Conf_Wins/(Conf_Wins+Conf_Losses)),
+         RegSeason_WinPct = RegSeason_Wins/(RegSeason_Wins+RegSeason_Losses)
+  ) %>%
+  select("Team", "Ranked_WinPct", "Conf_WinPct", "RegSeason_WinPct",
+         "RegSeason_WinLoss")
+
+winloss_2025 = winloss_2025 %>%
+  mutate(Ranked_WinPct = Ranked_Wins/(Ranked_Wins+Ranked_Losses),
+         Conf_WinPct = ifelse(is.na(Conf_Wins),
+                              0,
+                              Conf_Wins/(Conf_Wins+Conf_Losses)),
+         RegSeason_WinPct = RegSeason_Wins/(RegSeason_Wins+RegSeason_Losses)
+  ) %>%
+  select("Team", "Ranked_WinPct", "Conf_WinPct", "RegSeason_WinPct",
+         "RegSeason_WinLoss")
+```
+
+#### Season Stats For Teams
+```{r}
+teams2024 = read.csv("2024_season.csv")
+teams2024 = teams2024 %>%
+  pivot_wider(names_from=StatName,
+              values_from=StatValue
+  )
+
+teams2025 = read.csv("2025_season.csv")
+teams2025 = teams2025 %>%
+  pivot_wider(names_from=StatName,
+              values_from=StatValue
+  )
+```
+
+#### Create Model Features
+```{r}
+teams2024 = teams2024 %>%
+  mutate(yards_diff_pg = (totalYards-totalYardsOpponent)/games,
+         pass_yards_diff_pg = (netPassingYards-netPassingYardsOpponent)/games,
+         rush_yards_diff_pg = (rushingYards-rushingYardsOpponent)/games,
+         td_diff_pg =
+           (passingTDs+rushingTDs-passingTDsOpponent-rushingTDsOpponent)/games,
+         turnover_diff_pg = (turnoversOpponent-turnovers)/games,
+         interception_diff_pg = (interceptions-interceptionsOpponent)/games,
+         fumble_diff_pg = (fumblesRecovered-fumblesLost)/games,
+         sack_diff_pg = (sacks-sacksOpponent)/games,
+         tfl_diff_pg = (tacklesForLoss-tacklesForLossOpponent)/games,
+         penalties_pg = penalties/games,
+         penalty_yards_pg = penaltyYards/games,
+         possession_diff = possessionTime-possessionTimeOpponent
+  )
+
+teams2025 = teams2025 %>%
+  mutate(yards_diff_pg = (totalYards-totalYardsOpponent)/games,
+         pass_yards_diff_pg = (netPassingYards-netPassingYardsOpponent)/games,
+         rush_yards_diff_pg = (rushingYards-rushingYardsOpponent)/games,
+         td_diff_pg =
+           (passingTDs+rushingTDs-passingTDsOpponent-rushingTDsOpponent)/games,
+         turnover_diff_pg = (turnoversOpponent-turnovers)/games,
+         interception_diff_pg = (interceptions-interceptionsOpponent)/games,
+         fumble_diff_pg = (fumblesRecovered-fumblesLost)/games,
+         sack_diff_pg = (sacks-sacksOpponent)/games,
+         tfl_diff_pg = (tacklesForLoss-tacklesForLossOpponent)/games,
+         penalties_pg = penalties/games,
+         penalty_yards_pg = penaltyYards/games,
+         possession_diff = possessionTime-possessionTimeOpponent
+  )
+```
+
+#### Add Win Percentages to Team Stats Dataset
+```{r}
+teams2024 = teams2024 %>%
+  left_join(winloss_2024, by="Team") %>%
+  drop_na()
+
+teams2025 = teams2025 %>%
+  left_join(winloss_2025, by="Team") %>%
+  drop_na()
+```
+
+#### Standardize All Model Features
+```{r}
+teams2024 = teams2024 %>%
+  mutate(across(c(yards_diff_pg,
+                  pass_yards_diff_pg,
+                  rush_yards_diff_pg,
+                  td_diff_pg,
+                  turnover_diff_pg,
+                  interception_diff_pg,
+                  fumble_diff_pg,
+                  sack_diff_pg,
+                  tfl_diff_pg,
+                  penalties_pg,
+                  penalty_yards_pg,
+                  possession_diff,
+                  Ranked_WinPct,
+                  Conf_WinPct,
+                  RegSeason_WinPct
+                ),
+                ~ scale(.)[,1]
+  ))
+
+teams2025 = teams2025 %>%
+  mutate(across(c(yards_diff_pg,
+                  pass_yards_diff_pg,
+                  rush_yards_diff_pg,
+                  td_diff_pg,
+                  turnover_diff_pg,
+                  interception_diff_pg,
+                  fumble_diff_pg,
+                  sack_diff_pg,
+                  tfl_diff_pg,
+                  penalties_pg,
+                  penalty_yards_pg,
+                  possession_diff,
+                  Ranked_WinPct,
+                  Conf_WinPct,
+                  RegSeason_WinPct
+                ),
+                ~ scale(.)[,1]
+  ))
+```
+
+#### Weigh Features to Create Resume Score
+```{r}
+teams2024 = teams2024 %>%
+  mutate(score =
+           0.10*(pass_yards_diff_pg+rush_yards_diff_pg+td_diff_pg) +
+           0.10*(interception_diff_pg+fumble_diff_pg+sack_diff_pg+tfl_diff_pg) +
+           0.05*(turnover_diff_pg+possession_diff) -
+           0.05*(penalties_pg+penalty_yards_pg) +
+           0.50*(Ranked_WinPct) +
+           0.15*(RegSeason_WinPct) +
+           0.05*(Conf_WinPct)
+  )
+
+teams2025 = teams2025 %>%
+  mutate(score =
+           0.10*(pass_yards_diff_pg+rush_yards_diff_pg+td_diff_pg) +
+           0.10*(interception_diff_pg+fumble_diff_pg+sack_diff_pg+tfl_diff_pg) +
+           0.05*(turnover_diff_pg+possession_diff) -
+           0.05*(penalties_pg+penalty_yards_pg) +
+           0.50*(Ranked_WinPct) +
+           0.15*(RegSeason_WinPct) +
+           0.05*(Conf_WinPct)
+  )
+```
+
+#### Find Playoff Picture
+```{r}
+teams2024 %>%
+  arrange(desc(score)) %>%
+  mutate(Rank=row_number(),
+         Record=RegSeason_WinLoss) %>%
+  select(Team, Conference, Rank, Record) %>%
+  head(12)
+```
+
+```{r}
+teams2025 %>%
+  arrange(desc(score)) %>%
+  mutate(Rank=row_number(),
+         Record=RegSeason_WinLoss) %>%
+  select(Team, Conference, Rank, Record) %>%
+  head(12)
+```
+
+#### Actual 2024 and 2025 Playoff Teams
+```{r}
+playoff24_tms = c("Oregon", "Georgia", "Boise State"," Arizona State", "Texas",
+                "Penn State", "Notre Dame", "Ohio State", "Tennessee", "Indiana",
+                "SMU", "Clemson")
+
+playoff25_tms = c("Indiana", "Ohio State", "Georgia", "Texas Tech", "Oregon",
+                  "Ole Miss", "Texas A&M", "Oklahoma", "Alabama", "Miami", "Tulane",
+                  "James Madison")
+```
+
