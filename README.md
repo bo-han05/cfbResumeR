@@ -9,7 +9,7 @@
 <!-- badges: end -->
 
 The goal of cfbResumeR is to create a 12-team playoff picture from CFB
-team resumes based on-field dominance and on-paper records.
+team resumes based on-field dominance and record success.
 
 ## Installation
 

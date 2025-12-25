@@ -3,7 +3,7 @@ Title: Building CFB Playoff Picture From Team Resumes
 Version: 0.0.0.9000
 Authors@R: 
     person("Bo", "Han", , "hanbo@utexas.edu", role = c("aut", "cre"))
-Description: cfbResumeR creates a 12-team playoff picture from CFB team resumes based on-field dominance and on-paper records.
+Description: cfbResumeR creates a 12-team playoff picture from CFB team resumes based on-field dominance and record success.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
