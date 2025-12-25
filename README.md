@@ -1,29 +1,20 @@
----
-output: github_document
----
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-```
 
 # cfbResumeR
 
 <!-- badges: start -->
+
 [![R-CMD-check](https://github.com/bo-han05/cfbResumeR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bo-han05/cfbResumeR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of cfbResumeR is to create a 12-team playoff picture from CFB team resumes based on-field dominance and on-paper records.
+The goal of cfbResumeR is to create a 12-team playoff picture from CFB
+team resumes based on-field dominance and on-paper records.
 
 ## Installation
 
-You can install the development version of field from [GitHub](https://github.com/) with:
+You can install the development version of field from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("pak")
@@ -34,7 +25,7 @@ pak::pak("bo-han05/cfbResumeR")
 
 This is a basic example which shows you how to solve a common problem:
 
-```{r example}
+``` r
 library(cfbResumeR)
 season_2026 = data.frame(
   Team = c("Texas", "Michigan State"),
@@ -56,5 +47,6 @@ season_2026 = data.frame(
   Conf_WinPct = c(1, 5/9))
 
 playoff_picture(season_2026, n=1)
+#>    Team Conference Rank Record
+#> 1 Texas        SEC    1 12-1-0
 ```
-

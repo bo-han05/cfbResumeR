@@ -357,8 +357,8 @@ display: none;
 </div>
 
 
-<div id="win-loss-records-against-ranked-opponents" class="section level2">
-<h2>Win Loss Records Against Ranked Opponents</h2>
+<div id="win-loss-records-against-ranked-opponents" class="section level4">
+<h4>Win Loss Records Against Ranked Opponents</h4>
 <pre class="r"><code>url = &quot;https://betiq.teamrankings.com/college-football/betting-trends/win-loss-records-vs-ranked-opponent/?season=2024&quot;
 page = read_html(url)
 
@@ -378,8 +378,8 @@ rk_wl = page %&gt;%
 
 ranked2025 = data.frame(Team=team, Ranked_WinLoss=rk_wl)</code></pre>
 </div>
-<div id="win-loss-records-against-conference-opponents" class="section level2">
-<h2>Win Loss Records Against Conference Opponents</h2>
+<div id="win-loss-records-against-conference-opponents" class="section level4">
+<h4>Win Loss Records Against Conference Opponents</h4>
 <pre class="r"><code>url = &quot;https://betiq.teamrankings.com/college-football/betting-trends/win-loss-records-conference-games/?season=2024&quot;
 page = read_html(url)
 
@@ -399,8 +399,8 @@ conf_wl = page %&gt;%
 
 conference2025 = data.frame(Team=team, Conference_WinLoss=conf_wl)</code></pre>
 </div>
-<div id="win-loss-records-for-regular-season" class="section level2">
-<h2>Win Loss Records for Regular Season</h2>
+<div id="win-loss-records-for-regular-season" class="section level4">
+<h4>Win Loss Records for Regular Season</h4>
 <pre class="r"><code>url = &quot;https://betiq.teamrankings.com/college-football/betting-trends/win-loss-records-regular-season/?season=2024&quot;
 page = read_html(url)
 
@@ -420,8 +420,8 @@ reg_wl = page %&gt;%
 
 season2025 = data.frame(Team=team, RegSeason_WinLoss=reg_wl)</code></pre>
 </div>
-<div id="join-tables" class="section level2">
-<h2>Join Tables</h2>
+<div id="join-tables" class="section level4">
+<h4>Join Tables</h4>
 <pre class="r"><code>winloss_2024 = ranked2024 %&gt;%
   left_join(conference2024, by=&quot;Team&quot;) %&gt;%
   left_join(season2024, by=&quot;Team&quot;)
@@ -430,8 +430,59 @@ winloss_2025 = ranked2025 %&gt;%
   left_join(conference2025, by=&quot;Team&quot;) %&gt;%
   left_join(season2025, by=&quot;Team&quot;)</code></pre>
 </div>
-<div id="separate-wins-and-losses" class="section level2">
-<h2>Separate Wins and Losses</h2>
+<div id="standardize-team-names" class="section level4">
+<h4>Standardize Team Names</h4>
+<pre class="r"><code>name_map = c(
+  &quot;Ohio St&quot; = &quot;Ohio State&quot;,
+  &quot;Penn St&quot; = &quot;Penn State&quot;,
+  &quot;Iowa St&quot; = &quot;Iowa State&quot;,
+  &quot;Kansas St&quot; = &quot;Kansas State&quot;,
+  &quot;Michigan St&quot; = &quot;Michigan State&quot;,
+  &quot;Mississippi St&quot; = &quot;Mississippi State&quot;,
+  &quot;Oklahoma St&quot; = &quot;Oklahoma State&quot;,
+  &quot;Oregon St&quot; = &quot;Oregon State&quot;,
+  &quot;Utah St&quot; = &quot;Utah State&quot;,
+  &quot;Kent St&quot; = &quot;Kent State&quot;,
+  &quot;Boise St&quot; = &quot;Boise State&quot;,
+  &quot;Fresno St&quot; = &quot;Fresno State&quot;,
+  &quot;San Diego St&quot; = &quot;San Diego State&quot;,
+  &quot;San Jose St&quot; = &quot;San José State&quot;,
+  &quot;Florida St&quot; = &quot;Florida State&quot;,
+  &quot;N Illinois&quot; = &quot;Northern Illinois&quot;,
+  &quot;E Carolina&quot; = &quot;East Carolina&quot;,
+  &quot;C Michigan&quot; = &quot;Central Michigan&quot;,
+  &quot;W Michigan&quot; = &quot;Western Michigan&quot;,
+  &quot;W Kentucky&quot; = &quot;Western Kentucky&quot;,
+  &quot;S Florida&quot; = &quot;South Florida&quot;,
+  &quot;N Texas&quot; = &quot;North Texas&quot;,
+  &quot;Middle Tenn&quot; = &quot;Middle Tennessee&quot;,
+  &quot;Mississippi&quot; = &quot;Ole Miss&quot;,
+  &quot;Miami OH&quot; = &quot;Miami (OH)&quot;,
+  &quot;Coastal Car&quot; = &quot;Coastal Carolina&quot;,
+  &quot;Florida Intl&quot; = &quot;Florida International&quot;,
+  &quot;J Madison&quot; = &quot;James Madison&quot;,
+  &quot;UMass&quot; = &quot;Massachusetts&quot;,
+  &quot;Ball St&quot; = &quot;Ball State&quot;,
+  &quot;Georgia So&quot; = &quot;Georgia Southern&quot;,
+  &quot;Jacksonville St&quot; = &quot;Jacksonville State&quot;,
+  &quot;Arkansas St&quot; = &quot;Arkansas State&quot;,
+  &quot;Arizona St&quot; = &quot;Arizona State&quot;,
+  &quot;Georgia St&quot; = &quot;Georgia State&quot;,
+  &quot;New Mexico St&quot; = &quot;New Mexico State&quot;,
+  &quot;Washington St&quot; = &quot;Washington State&quot;,
+  &quot;Kennesaw St&quot; = &quot;Kennesaw State&quot;,
+  &quot;Colorado St&quot; = &quot;Colorado State&quot;,
+  &quot;S Alabama&quot; = &quot;South Alabama&quot;
+)
+
+winloss_2024 = winloss_2024 %&gt;%
+  mutate(Team=recode(Team, !!!name_map))
+
+winloss_2025 = winloss_2025 %&gt;%
+  mutate(Team = recode(Team, !!!name_map))</code></pre>
+</div>
+<div id="separate-wins-and-losses" class="section level4">
+<h4>Separate Wins and Losses</h4>
 <pre class="r"><code>split_record = function(df, col){
   df %&gt;%
     separate({{col}}, into=c(&quot;Wins&quot;, &quot;Losses&quot;), sep=&quot;-&quot;, convert=T)
@@ -452,8 +503,8 @@ winloss_2025 = winloss_2025 %&gt;%
   separate(RegSeason_WinLoss, into=c(&quot;RegSeason_Wins&quot;, &quot;RegSeason_Losses&quot;), sep=&quot;-&quot;,
            convert=T, remove=F)</code></pre>
 </div>
-<div id="convert-winslosses-into-win-percentages" class="section level2">
-<h2>Convert Wins/Losses into Win Percentages</h2>
+<div id="convert-winslosses-into-win-percentages" class="section level4">
+<h4>Convert Wins/Losses into Win Percentages</h4>
 <pre class="r"><code>winloss_2024 = winloss_2024 %&gt;%
   mutate(Ranked_WinPct = Ranked_Wins/(Ranked_Wins+Ranked_Losses),
          Conf_WinPct = ifelse(is.na(Conf_Wins),
@@ -474,8 +525,8 @@ winloss_2025 = winloss_2025 %&gt;%
   select(&quot;Team&quot;, &quot;Ranked_WinPct&quot;, &quot;Conf_WinPct&quot;, &quot;RegSeason_WinPct&quot;,
          &quot;RegSeason_WinLoss&quot;)</code></pre>
 </div>
-<div id="season-stats-for-teams" class="section level2">
-<h2>Season Stats For Teams</h2>
+<div id="season-stats-for-teams" class="section level4">
+<h4>Season Stats For Teams</h4>
 <pre class="r"><code>teams2024 = read.csv(&quot;2024_season.csv&quot;)
 teams2024 = teams2024 %&gt;%
   pivot_wider(names_from=StatName,
@@ -488,8 +539,8 @@ teams2025 = teams2025 %&gt;%
               values_from=StatValue
   )</code></pre>
 </div>
-<div id="create-model-features" class="section level2">
-<h2>Create Model Features</h2>
+<div id="create-model-features" class="section level4">
+<h4>Create Model Features</h4>
 <pre class="r"><code>teams2024 = teams2024 %&gt;%
   mutate(yards_diff_pg = (totalYards-totalYardsOpponent)/games,
          pass_yards_diff_pg = (netPassingYards-netPassingYardsOpponent)/games,
@@ -522,8 +573,8 @@ teams2025 = teams2025 %&gt;%
          possession_diff = possessionTime-possessionTimeOpponent
   )</code></pre>
 </div>
-<div id="add-win-percentages-to-team-stats-dataset" class="section level2">
-<h2>Add Win Percentages to Team Stats Dataset</h2>
+<div id="add-win-percentages-to-team-stats-dataset" class="section level4">
+<h4>Add Win Percentages to Team Stats Dataset</h4>
 <pre class="r"><code>teams2024 = teams2024 %&gt;%
   left_join(winloss_2024, by=&quot;Team&quot;) %&gt;%
   drop_na()
@@ -532,8 +583,8 @@ teams2025 = teams2025 %&gt;%
   left_join(winloss_2025, by=&quot;Team&quot;) %&gt;%
   drop_na()</code></pre>
 </div>
-<div id="standardize-all-model-features" class="section level2">
-<h2>Standardize All Model Features</h2>
+<div id="standardize-all-model-features" class="section level4">
+<h4>Standardize All Model Features</h4>
 <pre class="r"><code>teams2024 = teams2024 %&gt;%
   mutate(across(c(yards_diff_pg,
                   pass_yards_diff_pg,
@@ -574,8 +625,8 @@ teams2025 = teams2025 %&gt;%
                 ~ scale(.)[,1]
   ))</code></pre>
 </div>
-<div id="weigh-features-to-create-resume-score" class="section level2">
-<h2>Weigh Features to Create Resume Score</h2>
+<div id="weigh-features-to-create-resume-score" class="section level4">
+<h4>Weigh Features to Create Resume Score</h4>
 <pre class="r"><code>teams2024 = teams2024 %&gt;%
   mutate(score =
            0.10*(pass_yards_diff_pg+rush_yards_diff_pg+td_diff_pg) +
@@ -598,8 +649,8 @@ teams2025 = teams2025 %&gt;%
            0.05*(Conf_WinPct)
   )</code></pre>
 </div>
-<div id="find-playoff-picture" class="section level2">
-<h2>Find Playoff Picture</h2>
+<div id="find-playoff-picture" class="section level4">
+<h4>Find Playoff Picture</h4>
 <pre class="r"><code>teams2024 %&gt;%
   arrange(desc(score)) %&gt;%
   mutate(Rank=row_number(),
@@ -607,20 +658,20 @@ teams2025 = teams2025 %&gt;%
   select(Team, Conference, Rank, Record) %&gt;%
   head(12)</code></pre>
 <pre><code>## # A tibble: 12 × 4
-##    Team       Conference         Rank Record
-##    &lt;chr&gt;      &lt;chr&gt;             &lt;int&gt; &lt;chr&gt; 
-##  1 Memphis    American Athletic     1 10-2-0
-##  2 Oregon     Big Ten               2 13-0-0
-##  3 Notre Dame FBS Independents      3 11-1-0
-##  4 Georgia    SEC                   4 11-2-0
-##  5 Texas      SEC                   5 11-2-0
-##  6 Tennessee  SEC                   6 10-2-0
-##  7 Kansas     Big 12                7 5-7-0 
-##  8 Syracuse   ACC                   8 9-3-0 
-##  9 BYU        Big 12                9 10-2-0
-## 10 Alabama    SEC                  10 9-3-0 
-## 11 Indiana    Big Ten              11 11-1-0
-## 12 SMU        ACC                  12 11-2-0</code></pre>
+##    Team              Conference         Rank Record
+##    &lt;chr&gt;             &lt;chr&gt;             &lt;int&gt; &lt;chr&gt; 
+##  1 Ohio State        Big Ten               1 10-2-0
+##  2 Memphis           American Athletic     2 10-2-0
+##  3 Oregon            Big Ten               3 13-0-0
+##  4 Notre Dame        FBS Independents      4 11-1-0
+##  5 Northern Illinois Mid-American          5 7-5-0 
+##  6 Arizona State     Big 12                6 11-2-0
+##  7 Boise State       Mountain West         7 12-1-0
+##  8 Ole Miss          SEC                   8 9-3-0 
+##  9 Iowa State        Big 12                9 10-3-0
+## 10 Penn State        Big Ten              10 11-2-0
+## 11 Georgia           SEC                  11 11-2-0
+## 12 Texas             SEC                  12 11-2-0</code></pre>
 <pre class="r"><code>teams2025 %&gt;%
   arrange(desc(score)) %&gt;%
   mutate(Rank=row_number(),
@@ -633,15 +684,25 @@ teams2025 = teams2025 %&gt;%
 ##  1 Indiana    Big Ten        1 13-0-0
 ##  2 Texas Tech Big 12         2 12-1-0
 ##  3 Miami      ACC            3 10-2-0
-##  4 Texas A&amp;M  SEC            4 11-1-0
-##  5 Virginia   ACC            5 10-3-0
-##  6 Oregon     Big Ten        6 11-1-0
-##  7 Georgia    SEC            7 12-1-0
-##  8 Alabama    SEC            8 10-3-0
-##  9 SMU        ACC            9 8-4-0 
-## 10 Vanderbilt SEC           10 10-2-0
-## 11 Oklahoma   SEC           11 10-2-0
-## 12 Utah       Big 12        12 10-2-0</code></pre>
+##  4 Ohio State Big Ten        4 12-1-0
+##  5 Texas A&amp;M  SEC            5 11-1-0
+##  6 Virginia   ACC            6 10-3-0
+##  7 Oregon     Big Ten        7 11-1-0
+##  8 Georgia    SEC            8 12-1-0
+##  9 Ole Miss   SEC            9 11-1-0
+## 10 Alabama    SEC           10 10-3-0
+## 11 SMU        ACC           11 8-4-0 
+## 12 Vanderbilt SEC           12 10-2-0</code></pre>
+</div>
+<div id="actual-2024-and-2025-playoff-teams" class="section level4">
+<h4>Actual 2024 and 2025 Playoff Teams</h4>
+<pre class="r"><code>playoff24_tms = c(&quot;Oregon&quot;, &quot;Georgia&quot;, &quot;Boise State&quot;,&quot; Arizona State&quot;, &quot;Texas&quot;,
+                &quot;Penn State&quot;, &quot;Notre Dame&quot;, &quot;Ohio State&quot;, &quot;Tennessee&quot;, &quot;Indiana&quot;,
+                &quot;SMU&quot;, &quot;Clemson&quot;)
+
+playoff25_tms = c(&quot;Indiana&quot;, &quot;Ohio State&quot;, &quot;Georgia&quot;, &quot;Texas Tech&quot;, &quot;Oregon&quot;,
+                  &quot;Ole Miss&quot;, &quot;Texas A&amp;M&quot;, &quot;Oklahoma&quot;, &quot;Alabama&quot;, &quot;Miami&quot;, &quot;Tulane&quot;,
+                  &quot;James Madison&quot;)</code></pre>
 </div>
 
 
