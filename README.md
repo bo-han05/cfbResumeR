@@ -8,8 +8,9 @@
 [![R-CMD-check](https://github.com/bo-han05/cfbResumeR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bo-han05/cfbResumeR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of cfbResumeR is to create a 12-team playoff picture from CFB
-team resumes based on-field dominance and record success.
+The goal of cfbResumeR is to create a playoff picture from CFB team
+resumes based on-field dominance and record success, with configurable
+team counts and resume score weights.
 
 ## Installation
 
