@@ -23,7 +23,7 @@ The goal of cfbResumeR is to create a playoff picture from CFB team resumes base
 
 ## Installation
 
-You can install the development version of field from [GitHub](https://github.com/) with:
+You can install the development version of cfbResumeR from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("pak")

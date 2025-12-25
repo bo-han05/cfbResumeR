@@ -14,7 +14,7 @@ team counts and resume score weights.
 
 ## Installation
 
-You can install the development version of field from
+You can install the development version of cfbResumeR from
 [GitHub](https://github.com/) with:
 
 ``` r
