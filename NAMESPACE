@@ -2,6 +2,7 @@
 
 export(playoff_picture)
 importFrom(dplyr,arrange)
+importFrom(dplyr,coalesce)
 importFrom(dplyr,desc)
 importFrom(dplyr,mutate)
 importFrom(dplyr,row_number)

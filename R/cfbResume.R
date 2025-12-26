@@ -19,7 +19,7 @@
 #' @param regWeight Weighting of WinPct in the regular season for resume score
 #'
 #' @return Returns the top n teams based on resume scores
-#' @importFrom dplyr arrange mutate select row_number desc
+#' @importFrom dplyr arrange mutate select row_number desc coalesce
 #' @importFrom magrittr %>%
 #' @importFrom utils head
 #' @export
@@ -38,9 +38,9 @@ playoff_picture = function(df, n=12,
              defenseWeight*(interception_diff_pg+fumble_diff_pg+sack_diff_pg+tfl_diff_pg) +
              controlWeight*(turnover_diff_pg+possession_diff) +
              penaltyWeight*(penalties_pg+penalty_yards_pg) +
-             rankedWeight*(Ranked_WinPct) +
+             rankedWeight*(coalesce(Ranked_WinPct,0)) +
              regWeight*(RegSeason_WinPct) +
-             confWeight*(Conf_WinPct)) %>%
+             confWeight*(coalesce(Conf_WinPct,0))) %>%
     arrange(desc(score)) %>%
     mutate(Rank=row_number()) %>%
     select(Team, Conference, Rank, Record) %>%
