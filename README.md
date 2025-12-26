@@ -66,4 +66,11 @@ playoff_picture(season_2026, n=6, rankedWeight=0.30, confWeight=0.25)
 #> 4        Alabama        SEC    4  9-3-0
 #> 5     Penn State    Big Ten    5  9-3-0
 #> 6 Michigan State    Big Ten    6  9-4-0
+playoff_picture(season_2026, n=4, rankedWeight=0.20, offenseWeight=0.25,
+                defenseWeight=0.25)
+#>         Team Conference Rank Record
+#> 1    Georgia        SEC    1 11-2-0
+#> 2      Texas        SEC    2 12-1-0
+#> 3 Ohio State    Big Ten    3 11-2-0
+#> 4    Alabama        SEC    4  9-3-0
 ```
