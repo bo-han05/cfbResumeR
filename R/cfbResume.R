@@ -19,7 +19,7 @@
 #' @param regWeight Weighting of WinPct in the regular season for resume score
 #'
 #' @return Returns the top n teams based on resume scores
-#' @importFrom dplyr arrange mutate select row_number desc coalesce
+#' @importFrom dplyr arrange mutate select row_number desc coalesce across
 #' @importFrom magrittr %>%
 #' @importFrom utils head
 #' @export
@@ -32,15 +32,34 @@ playoff_picture = function(df, n=12,
                            regWeight=0.15,
                            confWeight=0.05){
 
+  df = df %>%
+    mutate(across(c(pass_yards_diff_pg,
+                    rush_yards_diff_pg,
+                    td_diff_pg,
+                    turnover_diff_pg,
+                    interception_diff_pg,
+                    fumble_diff_pg,
+                    sack_diff_pg,
+                    tfl_diff_pg,
+                    penalties_pg,
+                    penalty_yards_pg,
+                    possession_diff,
+                    Ranked_WinPct,
+                    RegSeason_WinPct,
+                    Conf_WinPct
+                  ),
+                  ~ scale(coalesce(.,0))[,1]
+    ))
+
   df %>%
     mutate(score =
              offenseWeight*(pass_yards_diff_pg+rush_yards_diff_pg+td_diff_pg) +
              defenseWeight*(interception_diff_pg+fumble_diff_pg+sack_diff_pg+tfl_diff_pg) +
              controlWeight*(turnover_diff_pg+possession_diff) +
              penaltyWeight*(penalties_pg+penalty_yards_pg) +
-             rankedWeight*(coalesce(Ranked_WinPct,0)) +
+             rankedWeight*(Ranked_WinPct) +
              regWeight*(RegSeason_WinPct) +
-             confWeight*(coalesce(Conf_WinPct,0))) %>%
+             confWeight*(Conf_WinPct)) %>%
     arrange(desc(score)) %>%
     mutate(Rank=row_number()) %>%
     select(Team, Conference, Rank, Record) %>%

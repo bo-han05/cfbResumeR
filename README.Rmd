@@ -61,5 +61,6 @@ season_2026 = data.frame(
 )
 
 playoff_picture(season_2026, n=4)
+playoff_picture(season_2026, n=6, rankedWeight=0.30, confWeight=0.25)
 ```
 

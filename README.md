@@ -53,9 +53,17 @@ season_2026 = data.frame(
 )
 
 playoff_picture(season_2026, n=4)
+#>         Team Conference Rank Record
+#> 1      Texas        SEC    1 12-1-0
+#> 2    Georgia        SEC    2 11-2-0
+#> 3 Ohio State    Big Ten    3 11-2-0
+#> 4 Penn State    Big Ten    4  9-3-0
+playoff_picture(season_2026, n=6, rankedWeight=0.30, confWeight=0.25)
 #>             Team Conference Rank Record
-#> 1     Ohio State    Big Ten    1 11-2-0
-#> 2          Texas        SEC    2 12-1-0
-#> 3        Georgia        SEC    3 11-2-0
-#> 4 Michigan State    Big Ten    4  9-4-0
+#> 1          Texas        SEC    1 12-1-0
+#> 2        Georgia        SEC    2 11-2-0
+#> 3     Ohio State    Big Ten    3 11-2-0
+#> 4        Alabama        SEC    4  9-3-0
+#> 5     Penn State    Big Ten    5  9-3-0
+#> 6 Michigan State    Big Ten    6  9-4-0
 ```
