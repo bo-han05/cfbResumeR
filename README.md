@@ -35,42 +35,42 @@ season_2026 = data.frame(
                  "ACC", "Big Ten", "FBS Independents"),
   Record = c("12-1-0", "9-4-0", "11-2-0", "11-2-0", "8-4-0", "9-3-0", "9-3-0",
              "10-3-0", "6-6-0", "7-5-0"),
-  pass_yards_diff_pg = c(120, 90, 105, 130, 80, 90, 75, 85, 50, 80),
-  rush_yards_diff_pg = c(180, 120, 170, 150, 100, 165, 155, 145, 100, 135),
-  td_diff_pg = c(3, 1, 2.5, 2.5, 1, 1.5, 1.5, 2, 0.5, 1.5),
-  interception_diff_pg = c(0.5, 0, 1, -0.5, 0, 1, 0, -1, -0.5, 0),
-  fumble_diff_pg = c(0.5, 0, 0.5, 0, 0, 0, -0.5, -0.5, 0, 1),
-  sack_diff_pg = c(1, 0.5, 2, 1, 0, 1.5, 1, -1, -2, 0.5),
-  tfl_diff_pg = c(2, 2.5, 3, 2, 1, 1.5, 1.5, 2, 0, 1),
+  pass_yards_diff_pg = c(120, 90, 105, 130, 80, 90, 75, 105, 50, 130),
+  rush_yards_diff_pg = c(180, 120, 170, 150, 100, 165, 155, 145, 100, 175),
+  td_diff_pg = c(3, 1, 2.5, 2.5, 1, 1.5, 1.5, 2, 0.5, 2.5),
+  interception_diff_pg = c(0.5, 0, 1, -0.5, 0, 1, 0, 0.5, -0.5, 1),
+  fumble_diff_pg = c(0.5, 0, 0.5, 0, 0, 0, -0.5, 0.5, 0, 1),
+  sack_diff_pg = c(1, 0.5, 2, 1, 0, 1.5, 1, -0.5, -2, 0.5),
+  tfl_diff_pg = c(2, 2.5, 3, 2, 1, 1.5, 1.5, 2, 0, 4),
   turnover_diff_pg = c(1, 0, 1.5, 2, 0, 1, 1, 0, -1, 1.5),
   possession_diff = c(4000, 2000, 2500, 5500, 1500, 1000, 500, 1500, -1500, 500),
-  penalties_pg = c(4, 3, 5, 4, 6, 5, 4, 6, 7, 4),
-  penalty_yards_pg = c(40, 25, 45, 35, 60, 45, 35, 65, 70, 35),
+  penalties_pg = c(4, 3, 5, 4, 6, 5, 4, 2, 7, 4),
+  penalty_yards_pg = c(40, 25, 45, 35, 60, 45, 35, 25, 70, 35),
   Ranked_WinPct = c(4/5, 2/4, 3/4, 3/4, 2/4, 2/4, 3/4, 2/4, 0/3, 1/4),
   RegSeason_WinPct = c(12/13, 9/13, 11/13, 11/13, 8/12, 9/12, 9/12, 10/13, 6/12,
                        7/12),
-  Conf_WinPct = c(1, 6/9, 7/9, 7/9, 7/9, 6/8, 7/9, 6/8, 5/9, NA)
+  Conf_WinPct = c(1, 6/9, 7/9, 7/9, 7/9, 6/8, 7/9, 1, 5/9, NA)
 )
 
 playoff_picture(season_2026, n=4)
-#>         Team Conference Rank Record
-#> 1      Texas        SEC    1 12-1-0
-#> 2    Georgia        SEC    2 11-2-0
-#> 3 Ohio State    Big Ten    3 11-2-0
-#> 4 Penn State    Big Ten    4  9-3-0
-playoff_picture(season_2026, n=6, rankedWeight=0.30, confWeight=0.25)
-#>             Team Conference Rank Record
-#> 1          Texas        SEC    1 12-1-0
-#> 2        Georgia        SEC    2 11-2-0
-#> 3     Ohio State    Big Ten    3 11-2-0
-#> 4        Alabama        SEC    4  9-3-0
-#> 5     Penn State    Big Ten    5  9-3-0
-#> 6 Michigan State    Big Ten    6  9-4-0
+#>            Team Conference Rank Record
+#> 1         Texas        SEC    1 12-1-0
+#> 2       Georgia        SEC    2 11-2-0
+#> 3    Ohio State    Big Ten    3 11-2-0
+#> 4 Florida State        ACC    4 10-3-0
+playoff_picture(season_2026, n=6, rankedWeight=0.05, confWeight=0.50)
+#>            Team Conference Rank Record
+#> 1         Texas        SEC    1 12-1-0
+#> 2       Georgia        SEC    2 11-2-0
+#> 3 Florida State        ACC    3 10-3-0
+#> 4    Ohio State    Big Ten    4 11-2-0
+#> 5       Alabama        SEC    5  9-3-0
+#> 6    Penn State    Big Ten    6  9-3-0
 playoff_picture(season_2026, n=4, rankedWeight=0.20, offenseWeight=0.25,
                 defenseWeight=0.25)
-#>         Team Conference Rank Record
-#> 1    Georgia        SEC    1 11-2-0
-#> 2      Texas        SEC    2 12-1-0
-#> 3 Ohio State    Big Ten    3 11-2-0
-#> 4    Alabama        SEC    4  9-3-0
+#>         Team       Conference Rank Record
+#> 1    Georgia              SEC    1 11-2-0
+#> 2      Texas              SEC    2 12-1-0
+#> 3 Notre Dame FBS Independents    3  7-5-0
+#> 4 Ohio State          Big Ten    4 11-2-0
 ```
